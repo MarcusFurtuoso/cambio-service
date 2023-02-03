@@ -4,6 +4,8 @@ import com.microservice.cambioservice.model.Cambio;
 import com.microservice.cambioservice.repository.CambioRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,8 @@ public class CambioController {
     @Autowired
     private CambioRepository repository;
 
+    private Logger logger = LoggerFactory.getLogger(CambioController.class);
+
     @Operation(description = "Get cambio from currency!")
     @GetMapping(value = "/{amount}/{from}/{to}")
     public Cambio getCambio(
@@ -32,6 +36,7 @@ public class CambioController {
             @PathVariable("from") String from,
             @PathVariable("to") String to) {
 
+        logger.info("getCambio is called with -> {}, {} and {}", amount, from, to);
         var cambio = repository.findByFromAndTo(from, to);
         if(cambio == null) throw new RuntimeException("Currency Unsupported");
 
